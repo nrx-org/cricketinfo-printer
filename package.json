@@ -9,7 +9,6 @@
   "keywords": [],
   "author": "",
   "dependencies": {
-    "chrome-aws-lambda": "^1.14.0",
-    "puppeteer-core": "^1.14.0"
+    "puppeteer": "^1.14.0"
   }
 }
