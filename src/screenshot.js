@@ -15,6 +15,7 @@ module.exports = async function (req, res) {
       return;
     }
 
+    console.log(`Printing ${url}, selector is ${selector}, type is ${type} ...`);
     const file = await getScreenshot(url, selector, type);
     res.statusCode = 200;
     res.setHeader('Content-Type', `image/${type}`);
@@ -22,7 +23,7 @@ module.exports = async function (req, res) {
   } catch (e) {
     res.statusCode = 500;
     res.setHeader('Content-Type', 'text/html');
-    res.end('<h1>Server Error</h1><p>Sorry, there was a problem</p>');
+    res.end(`<h1>Server Error</h1><p>Sorry, there was a problem</p><p><em>${e.message}</em></p>`);
     console.error(e.message);
   }
 };
