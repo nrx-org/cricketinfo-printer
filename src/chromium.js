@@ -2,6 +2,16 @@ const puppeteer = require("puppeteer");
 const debug = require("debug")("wikipedia-printer:chromium");
 
 async function getScreenshot(url, selector, type) {
+  if (type.toLocaleLowerCase() === "pdf") {
+    debug("Generating a PDF");
+    return getPDF(url);
+  } else {
+    debug("Generating a PNG");
+    return getPNG(url, selector);
+  }
+}
+
+async function getPNG(url, selector) {
   debug("Starting browser");
   const browser = await puppeteer.launch({
     headless: true
@@ -27,16 +37,31 @@ async function getScreenshot(url, selector, type) {
     }, selector);
   }
 
-  debug("Creating file");
-  let file = null;
-  if (type === "pdf") {
-    file = await page.pdf({ width: "300px", height: "600px" });
-  } else {
-    file = await page.screenshot({ type, clip });
-  }
+  debug("Creating PNG file");
+  const file = await page.screenshot({ type: "png", clip });
 
   debug("Closing browser");
   await browser.close();
+
+  return file;
+}
+
+async function getPDF(url) {
+  debug("Starting browser");
+  const browser = await puppeteer.launch({
+    headless: true
+  });
+
+  debug(`Navigating to URL ${url}`);
+  const page = await browser.newPage();
+  await page.goto(url, { waitUntil: "networkidle0" });
+
+  debug("Creating PDF file");
+  const file = await page.pdf({ width: "300px", height: "600px" });
+
+  debug("Closing browser");
+  await browser.close();
+
   return file;
 }
 

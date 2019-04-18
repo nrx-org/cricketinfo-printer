@@ -21,11 +21,22 @@ module.exports = async function(request, response) {
     }
 
     debug(
-      `Printing URL ${url}, picking selector "${selector}", image type is ${type}`
+      `Printing URL ${url}, picking selector ${selector}, returning file of type ${type}`
     );
     const file = await getScreenshot(url, selector, type);
     response.statusCode = 200;
-    response.setHeader("Content-Type", `image/${type}`);
+    response.setHeader(
+      "Content-Type",
+      type.toLocaleLowerCase() === "pdf" ? "application/pdf" : `image/${type}`
+    );
+
+    if (type.toLocaleLowerCase() === "pdf") {
+      response.setHeader(
+        "Content-disposition",
+        `attachment; filename=download.pdf`
+      );
+    }
+
     response.end(file);
   } catch (e) {
     response.statusCode = 500;
