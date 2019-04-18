@@ -10,6 +10,8 @@
   "keywords": [],
   "author": "",
   "dependencies": {
+    "debug": "^4.1.1",
+    "prettier": "^1.17.0",
     "puppeteer": "^1.14.0"
   }
 }

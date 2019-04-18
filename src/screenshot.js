@@ -1,29 +1,40 @@
-const {parse} = require('url');
-const {getScreenshot} = require('./chromium');
-const {getUrlFromPath, isValidUrl} = require('./validator');
+const { parse } = require("url");
+const debug = require("debug")("wikipedia-printer:screenshot");
 
-module.exports = async function (req, res) {
+const { getScreenshot } = require("./chromium");
+const { getUrlFromPath, isValidUrl } = require("./validator");
+
+module.exports = async function(request, response) {
   try {
-    const {pathname = '/', query = {}} = parse(req.url, true);
-    const {type = 'png', selector = null} = query;
+    const { pathname = "/", query = {} } = parse(request.url, true);
+    const { type = "png", selector = null } = query;
     const url = getUrlFromPath(pathname);
 
     if (!isValidUrl(url)) {
-      res.statusCode = 400;
-      res.setHeader('Content-Type', 'text/html');
-      res.end(`<h1>Bad Request</h1><p>The url <em>${url}</em> is not valid.</p>`);
+      debug(`The URL "${url}" is not valid, bailing out`);
+      response.statusCode = 400;
+      response.setHeader("Content-Type", "text/html");
+      response.end(
+        `<h1>Bad Request</h1><p>The url <em>${url}</em> is not valid.</p>`
+      );
       return;
     }
 
-    console.log(`Printing ${url}, selector is ${selector}, type is ${type} ...`);
+    debug(
+      `Printing URL ${url}, picking selector "${selector}", image type is ${type}`
+    );
     const file = await getScreenshot(url, selector, type);
-    res.statusCode = 200;
-    res.setHeader('Content-Type', `image/${type}`);
-    res.end(file);
+    response.statusCode = 200;
+    response.setHeader("Content-Type", `image/${type}`);
+    response.end(file);
   } catch (e) {
-    res.statusCode = 500;
-    res.setHeader('Content-Type', 'text/html');
-    res.end(`<h1>Server Error</h1><p>Sorry, there was a problem</p><p><em>${e.message}</em></p>`);
+    response.statusCode = 500;
+    response.setHeader("Content-Type", "text/html");
+    response.end(
+      `<h1>Server Error</h1><p>Sorry, there was a problem</p><p><em>${
+        e.message
+      }</em></p>`
+    );
     console.error(e.message);
   }
 };
