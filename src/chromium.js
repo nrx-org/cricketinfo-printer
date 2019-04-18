@@ -57,7 +57,7 @@ async function getPDF(url) {
   await page.goto(url, { waitUntil: "networkidle0" });
 
   debug("Creating PDF file");
-  const file = await page.pdf({ width: "300px", height: "600px" });
+  const file = await page.pdf({ format: "A4" });
 
   debug("Closing browser");
   await browser.close();
