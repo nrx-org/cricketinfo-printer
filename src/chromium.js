@@ -1,5 +1,8 @@
 const puppeteer = require("puppeteer");
 const debug = require("debug")("wikipedia-printer:chromium");
+const nodeCleanup = require("node-cleanup");
+
+let BROWSER = null;
 
 async function getScreenshot(url, selector, type) {
   if (type.toLocaleLowerCase() === "pdf") {
@@ -12,13 +15,15 @@ async function getScreenshot(url, selector, type) {
 }
 
 async function getPNG(url, selector) {
-  debug("Starting browser");
-  const browser = await puppeteer.launch({
-    headless: true
-  });
+  if (!BROWSER) {
+    debug("Starting browser");
+    BROWSER = await puppeteer.launch({
+      headless: true
+    });
+  }
 
   debug(`Navigating to URL ${url}`);
-  const page = await browser.newPage();
+  const page = await BROWSER.newPage();
   page.setViewport({ width: 420, height: 780, deviceScaleFactor: 3 });
   await page.goto(url, { waitUntil: "networkidle0" });
 
@@ -40,29 +45,42 @@ async function getPNG(url, selector) {
   debug("Creating PNG file");
   const file = await page.screenshot({ type: "png", clip });
 
-  debug("Closing browser");
-  await browser.close();
+  debug("Closing page");
+  await page.close();
 
   return file;
 }
 
 async function getPDF(url) {
-  debug("Starting browser");
-  const browser = await puppeteer.launch({
-    headless: true
-  });
+  if (!BROWSER) {
+    debug("Starting browser");
+    BROWSER = await puppeteer.launch({
+      headless: true
+    });
+  }
 
   debug(`Navigating to URL ${url}`);
-  const page = await browser.newPage();
+  const page = await BROWSER.newPage();
   await page.goto(url, { waitUntil: "networkidle0" });
 
   debug("Creating PDF file");
   const file = await page.pdf({ format: "A4" });
 
-  debug("Closing browser");
-  await browser.close();
+  debug("Closing page");
+  await page.close();
 
   return file;
 }
+
+nodeCleanup(async (exitCode, signal) => {
+  debug("Cleaning up before exiting the app");
+  await BROWSER.close();
+
+  if (signal) {
+    nodeCleanup.uninstall();
+    process.kill(process.pid, signal);
+    return false;
+  }
+});
 
 module.exports = { getScreenshot };
