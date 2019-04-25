@@ -64,4 +64,4 @@ On Ubuntu (what we're using as our staging server), run the following command to
 
     $ pm2 start npm --name "wikipedia-printer" -- start
 
-6. You might want to reverse proxy requests to the app using Nginx or Apache.
+6. The app starts on port 8080 by default. You might want to reverse proxy requests to the app using Nginx or Apache.
