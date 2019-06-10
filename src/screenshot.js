@@ -175,6 +175,7 @@ module.exports.downloadAndCacheScreenshot = async (request, response) => {
   }
 
   response.setHeader("Content-Type", "application/json");
+  response.setHeader("Access-Control-Allow-Origin", request.get("host"));
   response.end(
     JSON.stringify({
       shareUrl: `http://sharecricketinfo.io/f/${imageShortId}`
