@@ -9,10 +9,9 @@ We built our own service instead of using an existing service because off-the-sh
 - NodeJS and NPM
 - Puppeteer (along with dependencies)
 - Fonts
-    - Lato
-    - Charter
-    - Noto Sans
-    - Martel
+    - Charis SIL
+- Cloudinary account
+    - The API key and API secret from your Cloudinary account
 
 ### Puppeteer Dependencies
 
@@ -22,24 +21,13 @@ On Ubuntu (what we're using as our staging server), run the following command to
 
 ### Fonts
 
-- Lato and Noto are available in the Ubuntu repositories:
+Charis SIL is available as a free download:
 
-    $ apt install fonts-lato fonts-noto
 
-- Martel is available on GitHub:
-
-    $ git clone https://github.com/typeoff/martel
-    $ cd martel/"Martel Font Files"/"TTFs with ttfautohints"/
-    $ mkdir ~/.local/share/fonts/
-    $ cp *.ttf ~/.local/share/fonts/
-    $ fc-cache -f -v
-
-- Charter is available as a free download:
-
-    $ curl -O https://practicaltypography.com/fonts/charter.zip
-    $ unzip charter.zip
-    $ cd charter/ttf/
-    $ mkdir ~/.local/share/fonts/
+    $ curl -O https://software.sil.org/downloads/r/charis/CharisSIL-5.000.zip
+    $ unzip CharisSIL-5.000.zip
+    $ cd CharisSIL-5.000
+    $ mkdir -p ~/.local/share/fonts/
     $ cp *.ttf ~/.local/share/fonts/
     $ fc-cache -f -v
 
@@ -49,19 +37,19 @@ On Ubuntu (what we're using as our staging server), run the following command to
 
 2. Once NPM is installed, install `pm2` globally (may require sudo).
 
-    $ npm i -g pm2
+       $ npm i -g pm2
 
 3. Clone the project repository and `cd` into it.
 
-    $ git clone <repository-url>
-    $ cd path/to/code
+       $ git clone <repository-url>
+       $ cd path/to/code
 
 4. Install dependencies from NPM.
 
-    $ npm i
+       $ npm i
  
 5. Start the app using `pm2`.
 
-    $ pm2 start npm --name "wikipedia-printer" -- start
+       $ CLOUDINARY_API_KEY=<cloudinary key> CLOUDINARY_API_SECRET=<cloudinary secret> pm2 start npm --name "wikipedia-printer" -- start
 
 6. The app starts on port 8080 by default. You might want to reverse proxy requests to the app using Nginx or Apache.
