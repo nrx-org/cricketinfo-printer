@@ -76,6 +76,9 @@ module.exports.downloadScreenshot = async function(request, response) {
 module.exports.downloadAndCacheScreenshot = async (request, response) => {
   const { url, selector, type = "image" } = request.query;
 
+  // Make sure this is present on all responses.
+  response.setHeader("Access-Control-Allow-Origin", request.get("host"));
+
   if (!url || !isValidUrl(url)) {
     debug(`The URL "${url}" is not valid, bailing out`);
     response.statusCode = 400;
@@ -175,7 +178,6 @@ module.exports.downloadAndCacheScreenshot = async (request, response) => {
   }
 
   response.setHeader("Content-Type", "application/json");
-  response.setHeader("Access-Control-Allow-Origin", request.get("host"));
   response.end(
     JSON.stringify({
       shareUrl: `http://sharecricketinfo.io/f/${imageShortId}`
