@@ -77,7 +77,7 @@ module.exports.downloadAndCacheScreenshot = async (request, response) => {
   const { url, selector, type = "image" } = request.query;
 
   // Make sure this is present on all responses.
-  response.setHeader("Access-Control-Allow-Origin", request.get("host"));
+  response.setHeader("Access-Control-Allow-Origin", "*");
 
   if (!url || !isValidUrl(url)) {
     debug(`The URL "${url}" is not valid, bailing out`);
