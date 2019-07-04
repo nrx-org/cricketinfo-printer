@@ -1,4 +1,4 @@
-# wikipedia-printer
+# cricketinfo-printer
 
 A service to generate screenshots and PDFs from URLs.
 
@@ -50,6 +50,6 @@ Charis SIL is available as a free download:
  
 5. Start the app using `pm2`.
 
-       $ CLOUDINARY_API_KEY=<cloudinary key> CLOUDINARY_API_SECRET=<cloudinary secret> pm2 start npm --name "wikipedia-printer" -- start
+       $ CLOUDINARY_API_KEY=<cloudinary key> CLOUDINARY_API_SECRET=<cloudinary secret> pm2 start npm --name "cricketinfo-printer" -- start
 
 6. The app starts on port 8080 by default. You might want to reverse proxy requests to the app using Nginx or Apache.
